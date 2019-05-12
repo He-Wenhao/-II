@@ -34,5 +34,23 @@
     <Text Include="temp.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="line_temp_x.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="line_temp_y.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="line_temp_vec.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="elli_temp_x.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="elli_temp_y.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="elli_temp_vec.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
 </Project>

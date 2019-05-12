@@ -123,6 +123,12 @@
     <ClInclude Include="solve_eq.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="elli_temp_vec.txt" />
+    <Text Include="elli_temp_x.txt" />
+    <Text Include="elli_temp_y.txt" />
+    <Text Include="line_temp_vec.txt" />
+    <Text Include="line_temp_x.txt" />
+    <Text Include="line_temp_y.txt" />
     <Text Include="temp.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

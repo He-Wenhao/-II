@@ -37,3 +37,11 @@ double abs(vd vec) {
 	}
 	return sqrt(result);
 }
+//求向量模平方
+double norm(vd vec) {
+	double result = 0;
+	for (auto x : vec) {
+		result += x * x;
+	}
+	return result;
+}
