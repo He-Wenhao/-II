@@ -229,10 +229,11 @@ void line_test_thread(int N_t, int N_data) {
 			pvec[vd{ 0.02*i+0.01,0.02*j+0.01 }] = 0;
 		}
 	}
-
+	unsigned outrand = rand();
 	for (int i = 0; i < N_data; i++) {
-		thread t([&px,&py, &pvec, N_t, i] {
-			srand(i);
+		outrand = rand()+100;
+		thread t([&px,&py, &pvec, N_t, i,outrand] {
+			srand(outrand);
 			//生成电子
 			state e_sample = generate_sample2D(line_light);
 			//激光结束时的状态
@@ -272,7 +273,6 @@ void line_test_thread(int N_t, int N_data) {
 		osvec << vec.first[0] << "\t" << vec.first[1] << "\t" << vec.second << endl;
 	}
 }
-
 
 //椭圆偏振 多线程版本
 void elli_test_thread(int N_t, int N_data) {
@@ -334,9 +334,9 @@ void elli_test_thread(int N_t, int N_data) {
 	cout << clock() - timenow;//!!!!!!!!!!!!!!!!!!!
 }
 int main() {
-	line_test_thread(400, 1e5);
-	//line_test(400, 5e3);
+	//line_test_thread(100, 1e4);
+	line_test(100, 1e5);
 	//elli_test(400, 1e5);
 	//static_test();
 	system("pause");
-}
+}  
