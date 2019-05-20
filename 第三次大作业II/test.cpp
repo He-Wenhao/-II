@@ -1,4 +1,12 @@
-﻿#include<iostream>
+﻿#include<random>
+
+using namespace std;
+
+int count_rand = 0;
+default_random_engine rand_e;
+uniform_real_distribution<double> rand_u(0, 1);
+
+#include<iostream>
 #include"my_data.h"
 #include"generate_e.h"
 #include"solve_eq.h"
@@ -7,7 +15,6 @@
 #include<time.h>
 #include<string>
 #include<thread>
-using namespace std;
 typedef vector<double> vd;
 
 /*
@@ -126,14 +133,18 @@ vd infp(vd rf_vf) {
 
 //最后一步统计电子
 //线偏振
-void line_test(int N_t,int N_data){
+void line_test(int N_t,int N_data0,double delta_tsample){
 	double timenow = clock();//!!!!!!!!!
-	map<double, int> px, py;
-	map<vd, int> pvec;
-
-	for (int i = 0; i < N_data; i++) {
+	map<double, int> px, py;//储存x,y方向数目
+	map<vd, int> pvec;//储存二维分布的数目
+	//遍历时间t,
+	for (double tsample = -2 * T; tsample <= 2 * T; tsample += delta_tsample) {
+		//计算权重
+		double Et = abs(line_light(tsample));
+		double N_data_t = N_data0 * pow(E, -2. / 3. / Et) / pow(Et, 3. / 2.);
+		for (int i = 0; i < N_data_t; i++) {
 			//生成电子
-			state e_sample = generate_sample2D(line_light);
+			state e_sample = generate_sample2D(line_light,tsample);
 			//激光结束时的状态
 			vd fstate = line_rf_vf(e_sample, N_t);
 			//无穷远初动量
@@ -146,12 +157,16 @@ void line_test(int N_t,int N_data){
 				px[px_]++;
 				py[py_]++;
 				pvec[vd{ px_,py_ }]++;
-				if (i % 1000 == 0) {
-					cout << i << endl;//!!!!!!!!
-				}
+				//if (i % 1000 == 0) {
+					//cout << i << endl;//!!!!!!!!
+				//}
 			}
-	}
 
+		}
+		if (abs(tsample - (int)tsample )< 0.14) {
+			cout << tsample << endl;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		}
+	}
 	ofstream osx;
 	osx.open("line_temp_x.txt");
 	for (auto x : px) {
@@ -169,6 +184,58 @@ void line_test(int N_t,int N_data){
 	}
 	cout << clock() - timenow;//!!!!!!!!!!!!!!!!!!!
 }
+
+//椭圆偏振
+void elli_test(int N_t, int N_data0, double delta_tsample) {
+	double timenow = clock();//!!!!!!!!!
+	map<double, int> px, py;//储存x,y方向数目
+	map<vd, int> pvec;//储存二维分布的数目
+	//遍历时间t,
+	for (double tsample = -2 * T; tsample <= 2 * T; tsample += delta_tsample) {
+		//计算权重
+		double Et = abs(elli_light(tsample));
+		double N_data_t = N_data0 * pow(E, -2. / 3. / Et) / pow(Et, 3. / 2.);
+		for (int i = 0; i < N_data_t; i++) {
+			//生成电子
+			state e_sample = generate_sample2D(elli_light, tsample);
+			//激光结束时的状态
+			vd fstate = elli_rf_vf(e_sample, N_t);
+			//无穷远初动量
+			vd inf_p = infp(fstate);
+			if (abs(inf_p[0]) < 1.5&&abs(inf_p[1]) < 1.5) {
+				//离散化
+				double px_ = 0.02*((int)(inf_p[0] * 50) + 0.5);
+				double py_ = 0.02*((int)(inf_p[1] * 50) + 0.5);
+				//统计个数
+				px[px_]++;
+				py[py_]++;
+				pvec[vd{ px_,py_ }]++;
+				//if (i % 1000 == 0) {
+					//cout << i << endl;//!!!!!!!!
+				//}
+			}
+
+		}
+		cout << tsample << endl;
+	}
+	ofstream osx;
+	osx.open("elli_temp_x.txt");
+	for (auto x : px) {
+		osx << x.first << "\t" << x.second << endl;
+	}
+	ofstream osy;
+	osy.open("elli_temp_y.txt");
+	for (auto y : py) {
+		osy << y.first << "\t" << y.second << endl;
+	}
+	ofstream osvec;
+	osvec.open("elli_temp_vec.txt");
+	for (auto vec : pvec) {
+		osvec << vec.first[0] << "\t" << vec.first[1] << "\t" << vec.second << endl;
+	}
+	cout << clock() - timenow;//!!!!!!!!!!!!!!!!!!!
+}
+/*
 //椭圆偏振
 void elli_test(int N_t, int N_data) {
 	map<double, int> px, py;
@@ -229,11 +296,13 @@ void line_test_thread(int N_t, int N_data) {
 			pvec[vd{ 0.02*i+0.01,0.02*j+0.01 }] = 0;
 		}
 	}
-	unsigned outrand = rand();
+	unsigned outrand = rand_e();
+	count_rand++;//!!!!!!!!!!!!!!!!
 	for (int i = 0; i < N_data; i++) {
-		outrand = rand()+100;
+		outrand = rand_e();
+		count_rand++;//!!!!!!!!!!!!!!!!
 		thread t([&px,&py, &pvec, N_t, i,outrand] {
-			srand(outrand);
+			rand_e.seed(outrand);
 			//生成电子
 			state e_sample = generate_sample2D(line_light);
 			//激光结束时的状态
@@ -332,11 +401,17 @@ void elli_test_thread(int N_t, int N_data) {
 		osvec << vec.first[0] << "\t" << vec.first[1] << "\t" << vec.second << endl;
 	}
 	cout << clock() - timenow;//!!!!!!!!!!!!!!!!!!!
-}
+}*/
 int main() {
 	//line_test_thread(100, 1e4);
-	line_test(100, 1e5);
+	//line_test(100, 1e4);
 	//elli_test(400, 1e5);
 	//static_test();
+	//cout << endl << endl << "!!!" << endl << count_rand << endl;
+	//cout << RAND_MAX;
+	//cout << rand_e.max() << endl << rand_e.min() << endl;
+	//cout <<endl<< count_rand<<endl;
+
+	line_test(400, 2e5, 0.1);
 	system("pause");
 }  

@@ -16,7 +16,7 @@ double f(double t) {
 //线偏振光
 vd line_light(double t) {
 	vd result{ 0,0 };
-	result[0] = -omega*f(t)*A0*cos(omega*t);
+	result[0] = -omega*f(t)*A0*sin(omega*t);
 	return result;
 }
 
