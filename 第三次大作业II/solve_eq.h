@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include<vector>
-
+#include<array>
 using namespace std;
-typedef vector<double> vd;
+typedef array<double,4> vd4;
+typedef array<double, 2> vd2;
 
 
 //求解二维粒子运动
@@ -10,16 +11,16 @@ typedef vector<double> vd;
 //受力F 是x,y,t的函数
 //init是初始值,t,tf是初,末时间
 //N是总迭代次数
-vd solve_2D_Newton(double t0, double tf, vd init, vd(*F)(double, double, double), int N) {
+vd4 solve_2D_Newton(const double &t0,const double &tf,const vd4 &init, vd2(*F)(double, double, double),const int &N) {
 	//初始化,坐标,动量,时间
-	vd r = { init[0],init[1] };
-	vd v = { init[2],init[3] };
+	vd2 r = { init[0],init[1] };
+	vd2 v = { init[2],init[3] };
 	double t = t0;
 	//步长
 	double delta_t = (tf - t0) / N;
 	//迭代,应用四阶龙格库塔法
-	vd k1(4, 0.), k2(4, 0.), k3(4, 0.), k4(4, 0.);
-	vd F1, F2, F3, F4;
+	vd4 k1{0,0,0,0}, k2{ 0,0,0,0 }, k3{ 0,0,0,0 }, k4{ 0,0,0,0 };
+	vd2 F1, F2, F3, F4;
 	for (int n = 0; n < N; n++) {
 		//计算龙格库塔参数k1,k2,k3,k4
 		F1 = F(r[0], r[1], t);
@@ -40,6 +41,6 @@ vd solve_2D_Newton(double t0, double tf, vd init, vd(*F)(double, double, double)
 		v[1] = v[1] + delta_t / 6.*(k1[3] + 2 * k2[3] + 2 * k3[3] + k4[3]);
 		t += delta_t;
 	}
-	return vd{ r[0],r[1],v[0],v[1] };
+	return vd4{ r[0],r[1],v[0],v[1] };
 }
 
