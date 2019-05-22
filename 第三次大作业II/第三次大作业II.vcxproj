@@ -131,6 +131,9 @@
     <Text Include="line_temp_y.txt" />
     <Text Include="temp.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bighome3II.nb" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
