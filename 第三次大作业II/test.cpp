@@ -1,11 +1,7 @@
 ﻿#include<random>
-
 using namespace std;
-
 default_random_engine rand_e;
 uniform_real_distribution<double> rand_u(0, 1);
-//rand_u(rand_e)
-normal_distribution<double> rand_norm(0, 1);
 #include<math.h>
 #include<iostream>
 #include"my_data.h"
@@ -16,11 +12,8 @@ normal_distribution<double> rand_norm(0, 1);
 #include<time.h>
 #include<string>
 #include<thread>
-
-
 typedef array<double, 4> vd4;
 typedef array<double, 2> vd2;
-
 
 //线偏振光的总力场
 vd2 line_F(double x, double y, double t) {
@@ -74,12 +67,12 @@ void line_test(int N_data0,double delta_tsample){
 	map<double, int> px, py;//储存x,y方向数目
 	map<vd2, int> pvec;//储存二维分布的数目
 	//初始化pvec
-	for (double x = -1.51; x <= 1.51; x += 0.01) {
-		for (double y = -1.51; y < 1.51; y += 0.01) {
+	for (double x = -1.51; x <= 1.51; x += 0.02) {
+		for (double y = -1.51; y < 1.51; y += 0.02) {
 			pvec[vd2{ x,y }] = 0;
 		}
 	}
-	//遍历时间t,
+	//遍历时间t
 	for (double tsample = -2 * T; tsample <= 2 * T; tsample += delta_tsample) {
 		//计算权重
 		double Et = abs(line_light(tsample));
@@ -106,6 +99,7 @@ void line_test(int N_data0,double delta_tsample){
 			cout << tsample << endl;//进程可视化
 		}
 	}
+	//将数据写入txt
 	ofstream osx;
 	osx.open("line_temp_x.txt");
 	for (auto x : px) {
@@ -132,8 +126,8 @@ void elli_test(int N_data0, double delta_tsample) {
 	map<double, int> px, py;//储存x,y方向数目
 	map<vd2, int> pvec;//储存二维分布的数目
 	//初始化
-	for (double x = -1.51; x <= 1.51; x += 0.01) {
-		for (double y = -1.51; y <= 1.51; y += 0.01) {
+	for (double x = -1.51; x <= 1.51; x += 0.02) {
+		for (double y = -1.51; y <= 1.51; y += 0.02) {
 			pvec[vd2{ x,y }] = 0;
 		}
 	}
@@ -165,6 +159,7 @@ void elli_test(int N_data0, double delta_tsample) {
 			cout << tsample << endl;//进程可视化
 		}
 	}
+	//将数据写入txt
 	ofstream osx;
 	osx.open("elli_temp_x.txt");
 	for (auto x : px) {
@@ -186,20 +181,10 @@ void elli_test(int N_data0, double delta_tsample) {
 
 
 
-void check_norm(){
-	map<double, double> result;
-	for (int i = 0; i < 1e7; i++) {
-		double x = generate_V();
-		result[0.01*(floor(100 * x) + 0.5)]++;
-	}
-	fstream os("temp.txt");
-	for (auto y : result) {
-		os << y.first << "\t" << y.second << endl;
-	}
-}
+
 
 int main() {
 	elli_test(5e5, 0.04);
-	//line_test(5e5, 0.04);
+	line_test(5e5, 0.04);
 	system("pause");
 }  

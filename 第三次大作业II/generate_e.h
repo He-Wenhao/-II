@@ -2,7 +2,7 @@
 #include"my_data.h"
 #include<array>
 using namespace std;
-//const double max_E = 1 / pow(E, 3. / 2.);
+
 const double max_g = sqrt(2 * Exp / PI);
 
 
@@ -44,7 +44,7 @@ state generate_sample2D(vd2(*light)(double),double t) {
 	//对标准正态分布取样
 	double V = generate_V();
 	//计算v垂直
-	double v_ver = sqrt(Et/2. )*V;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	double v_ver = sqrt(Et/2. )*V;
 	//单位径向量
 	vd2 er = { -light(t)[0] / Et,-light(t)[1] / Et };
 	double r0 = 0.5 / Et;
